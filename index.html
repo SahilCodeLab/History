@@ -500,92 +500,36 @@ body.dark-mode .question strong {
 </body>
 </html>
 
-<!-- Dark Mode Toggle Button -->
-<div class="toggle-container" id="darkModeToggle">
-    <i class="fas fa-moon toggle-icon"></i>
-    <i class="fas fa-sun toggle-icon"></i>
-    <span class="toggle-text">Dark Mode</span>
-</div>
+
+
+
+
 <style>
-  /* Dark Mode Toggle Button */
-.toggle-container {
-    position: fixed;
-    top: 15px;
-    right: 20px;
-    display: flex;
-    align-items: center;
-    background: #333;
-    padding: 8px 12px;
-    border-radius: 20px;
-    cursor: pointer;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    transition: background 0.3s ease, transform 0.3s ease;
-}
-
-.toggle-container:hover {
-    background: #444;
-    transform: scale(1.05);
-}
-
-/* Toggle Icon */
-.toggle-icon {
-    font-size: 18px;
-    margin-right: 10px;
-    color: white;
-    transition: transform 0.4s ease, opacity 0.4s ease;
-}
-
-/* Text */
-.toggle-text {
-    font-size: 14px;
-    font-weight: 500;
-    color: white;
-    transition: opacity 0.4s ease;
-}
-
-/* Icon Animation */
-.fa-moon {
-    opacity: 1;
-    transform: rotate(0deg);
-}
-
-.fa-sun {
-    opacity: 0;
-    transform: rotate(180deg);
-    position: absolute;
-}
-
-/* Dark Mode Icon Animation */
-body.dark-mode .fa-moon {
-    opacity: 0;
-    transform: rotate(-180deg);
-}
-
-body.dark-mode .fa-sun {
-    opacity: 1;
-    transform: rotate(0deg);
-}
-</style>
-<script>
-  const darkModeToggle = document.getElementById("darkModeToggle");
-const toggleText = document.querySelector(".toggle-text");
-
-// Check for saved preference
-if (localStorage.getItem("darkMode") === "enabled") {
-    document.body.classList.add("dark-mode");
-    toggleText.textContent = "Light Mode";
-}
-
-// Toggle Dark Mode
-darkModeToggle.addEventListener("click", () => {
-    document.body.classList.toggle("dark-mode");
-
-    if (document.body.classList.contains("dark-mode")) {
-        localStorage.setItem("darkMode", "enabled");
-        toggleText.textContent = "Light Mode";
-    } else {
-        localStorage.setItem("darkMode", "disabled");
-        toggleText.textContent = "Dark Mode";
+    /* Disable text selection */
+    body {
+        -webkit-user-select: none; /* Chrome, Safari */
+        -moz-user-select: none;    /* Firefox */
+        -ms-user-select: none;     /* Internet Explorer/Edge */
+        user-select: none;         /* Standard */
     }
-});
+</style>
+
+<script>
+    // Disable right-click
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+    });
+
+    // Disable Ctrl+U, Ctrl+C, Ctrl+S, Ctrl+Shift+I (Dev Tools)
+    document.addEventListener('keydown', function(e) {
+        if (
+            e.ctrlKey && (e.key === 'u' || e.key === 'U' || 
+                          e.key === 'c' || e.key === 'C' || 
+                          e.key === 's' || e.key === 'S') || 
+            (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i')) ||
+            e.key === 'F12'
+        ) {
+            e.preventDefault();
+        }
+    });
 </script>

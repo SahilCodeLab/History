@@ -519,33 +519,3 @@ body.dark-mode .question strong {
 
 
 
-
-<style>
-    /* Disable text selection */
-    body {
-        -webkit-user-select: none; /* Chrome, Safari */
-        -moz-user-select: none;    /* Firefox */
-        -ms-user-select: none;     /* Internet Explorer/Edge */
-        user-select: none;         /* Standard */
-    }
-</style>
-
-<script>
-    // Disable right-click
-    document.addEventListener('contextmenu', function(e) {
-        e.preventDefault();
-    });
-
-    // Disable Ctrl+U, Ctrl+C, Ctrl+S, Ctrl+Shift+I (Dev Tools)
-    document.addEventListener('keydown', function(e) {
-        if (
-            e.ctrlKey && (e.key === 'u' || e.key === 'U' || 
-                          e.key === 'c' || e.key === 'C' || 
-                          e.key === 's' || e.key === 'S') || 
-            (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i')) ||
-            e.key === 'F12'
-        ) {
-            e.preventDefault();
-        }
-    });
-</script>

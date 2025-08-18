@@ -1,52 +1,87 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>College Group Verification</title>
-  <style>
-    body { font-family: Arial, sans-serif; display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; background:#f4f4f4; }
-    form { display:flex; flex-direction:column; gap:10px; background:#fff; padding:20px; border-radius:8px; box-shadow:0 0 10px rgba(0,0,0,0.1); }
-    input { padding:10px; border:1px solid #ccc; border-radius:4px; }
-    button { padding:10px; border:none; background:#28a745; color:#fff; border-radius:4px; cursor:pointer; }
-    #msg { margin-top:15px; color:red; font-weight:bold; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>College Verification</title>
+<style>
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #f6d365, #fda085);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+.container {
+  background: white;
+  padding: 30px 40px;
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  width: 350px;
+  text-align: center;
+}
+h2 { margin-bottom: 20px; color: #333; }
+input {
+  width: 100%; padding: 10px; margin: 10px 0;
+  border-radius: 8px; border: 1px solid #ccc;
+  font-size: 16px;
+}
+button {
+  width: 100%; padding: 10px;
+  background: #ff6b6b; color: white; border: none;
+  border-radius: 8px; font-size: 16px;
+  cursor: pointer; transition: 0.3s;
+}
+button:hover { background: #ff4757; }
+.message { margin-top: 15px; font-weight: bold; color: #333; }
+</style>
 </head>
 <body>
-  <form id="f">
-    <input name="name" placeholder="Full Name" required>
-    <input name="id" placeholder="College ID" required>
-    <button>Verify</button>
+
+<div class="container">
+  <h2>Student Verification</h2>
+  <form id="verifyForm">
+    <input type="text" id="name" placeholder="Your Name" required>
+    <input type="text" id="id" placeholder="College ID / Reg. Number" required>
+    <input type="text" id="number" placeholder="WhatsApp Number" required>
+    <button type="submit">Verify & Join</button>
   </form>
-  <div id="msg"></div>
+  <div class="message" id="msg"></div>
+</div>
 
-  <script>
-    // ✅ Web App /exec URL
-    const API = "https://script.google.com/macros/s/AKfycbx6zxIRu1EVwh4fyM-eJcHFv3RNGDTcf3jtFKRuMLgfDaw6tPYOGuq3qKVbJ-nNn3H0NQ/exec";
+<script>
+document.getElementById('verifyForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const name = document.getElementById('name').value;
+  const id = document.getElementById('id').value;
+  const number = document.getElementById('number').value;
+  const msg = document.getElementById('msg');
 
-    document.getElementById("f").onsubmit = async e => {
-      e.preventDefault();
+  msg.textContent = "Processing...";
 
-      const name = e.target.name.value.trim();
-      const id = e.target.id.value.trim();
+  try {
+    const res = await fetch('https://script.google.com/macros/s/AKfycbyi3p8lr0H9X8H0pKgeFRfq29PUP0wbYZbtC56si4Ec5GRWP9JbBDO-CnJsbwijJs3q/exec', {
+      method: 'POST',
+      body: JSON.stringify({ name, id, number }),
+      headers: { 'Content-Type': 'application/json' }
+    });
+    const data = await res.json();
 
-      try {
-        let res = await fetch(API, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name, id })
-        });
-
-        let data = await res.json();
-
-        if(data.ok){
-          // Redirect to WhatsApp
-          window.location.href = data.redirect;
-        } else {
-          document.getElementById("msg").innerText = data.message;
-        }
-      } catch(err) {
-        document.getElementById("msg").innerText = "Error: " + err;
-      }
+    if(data.valid){
+      msg.textContent = data.message;
+      setTimeout(()=>{ window.location.href = data.redirectURL; }, 1000);
+    } else {
+      msg.textContent = data.message;
     }
-  </script>
+
+  } catch(err) {
+    msg.textContent = "Error connecting to server!";
+    console.error(err);
+  }
+});
+</script>
+
 </body>
 </html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>College Group Verification</title>
+  <style>
+    body { font-family: Arial, sans-serif; display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; background:#f4f4f4; }
+    form { display:flex; flex-direction:column; gap:10px; background:#fff; padding:20px; border-radius:8px; box-shadow:0 0 10px rgba(0,0,0,0.1); }
+    input { padding:10px; border:1px solid #ccc; border-radius:4px; }
+    button { padding:10px; border:none; background:#28a745; color:#fff; border-radius:4px; cursor:pointer; }
+    #msg { margin-top:15px; color:red; font-weight:bold; }
+  </style>
+</head>
+<body>
+  <form id="f">
+    <input name="name" placeholder="Full Name" required>
+    <input name="id" placeholder="College ID" required>
+    <button>Verify</button>
+  </form>
+  <div id="msg"></div>
+
+  <script>
+    // ✅ Web App /exec URL
+    const API = "https://script.google.com/macros/s/AKfycbx6zxIRu1EVwh4fyM-eJcHFv3RNGDTcf3jtFKRuMLgfDaw6tPYOGuq3qKVbJ-nNn3H0NQ/exec";
+
+    document.getElementById("f").onsubmit = async e => {
+      e.preventDefault();
+
+      const name = e.target.name.value.trim();
+      const id = e.target.id.value.trim();
+
+      try {
+        let res = await fetch(API, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, id })
+        });
+
+        let data = await res.json();
+
+        if(data.ok){
+          // Redirect to WhatsApp
+          window.location.href = data.redirect;
+        } else {
+          document.getElementById("msg").innerText = data.message;
+        }
+      } catch(err) {
+        document.getElementById("msg").innerText = "Error: " + err;
+      }
+    }
+  </script>
+</body>
+</html>

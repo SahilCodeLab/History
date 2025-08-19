@@ -6,36 +6,28 @@
 <title>College Verification</title>
 <style>
 body {
-  font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(135deg, #f6d365, #fda085);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  margin: 0;
+  font-family:'Segoe UI',sans-serif;
+  background:linear-gradient(135deg,#f6d365,#fda085);
+  display:flex; justify-content:center; align-items:center;
+  height:100vh; margin:0;
 }
 .container {
-  background: white;
-  padding: 30px 40px;
-  border-radius: 15px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-  width: 350px;
-  text-align: center;
+  background:white; padding:30px 40px;
+  border-radius:15px; box-shadow:0 10px 25px rgba(0,0,0,0.2);
+  width:350px; text-align:center;
 }
-h2 { margin-bottom: 20px; color: #333; }
+h2 { margin-bottom:20px; color:#333; }
 input {
-  width: 100%; padding: 10px; margin: 10px 0;
-  border-radius: 8px; border: 1px solid #ccc;
-  font-size: 16px;
+  width:100%; padding:10px; margin:10px 0;
+  border-radius:8px; border:1px solid #ccc; font-size:16px;
 }
 button {
-  width: 100%; padding: 10px;
-  background: #ff6b6b; color: white; border: none;
-  border-radius: 8px; font-size: 16px;
-  cursor: pointer; transition: 0.3s;
+  width:100%; padding:10px; background:#ff6b6b; color:white;
+  border:none; border-radius:8px; font-size:16px; cursor:pointer;
+  transition:0.3s;
 }
-button:hover { background: #ff4757; }
-.message { margin-top: 15px; font-weight: bold; color: #333; }
+button:hover { background:#ff4757; }
+.message { margin-top:15px; font-weight:bold; color:#333; min-height:20px;}
 </style>
 </head>
 <body>
@@ -54,31 +46,39 @@ button:hover { background: #ff4757; }
 <script>
 document.getElementById('verifyForm').addEventListener('submit', async (e) => {
   e.preventDefault();
-  const name = document.getElementById('name').value;
-  const id = document.getElementById('id').value;
-  const number = document.getElementById('number').value;
+  const name = document.getElementById('name').value.trim();
+  const id = document.getElementById('id').value.trim();
+  const number = document.getElementById('number').value.trim();
   const msg = document.getElementById('msg');
 
+  msg.style.color="#333";
   msg.textContent = "Processing...";
 
   try {
-    const res = await fetch('https://script.google.com/macros/s/AKfycbyi3p8lr0H9X8H0pKgeFRfq29PUP0wbYZbtC56si4Ec5GRWP9JbBDO-CnJsbwijJs3q/exec', {
+    const res = await fetch('https://script.google.com/macros/s/AKfycbxWUz9bE5IhAI_jxwi22adlX44kL2YVfRhSUgWiquhwRvw0yJKLVuvSP5jK5lCYsJbG/exec', {
       method: 'POST',
       body: JSON.stringify({ name, id, number }),
       headers: { 'Content-Type': 'application/json' }
     });
-    const data = await res.json();
+
+    const text = await res.text();
+    let data;
+    try { data = JSON.parse(text); } 
+    catch(err){ throw new Error("Invalid JSON response from server"); }
 
     if(data.valid){
-      msg.textContent = data.message;
-      setTimeout(()=>{ window.location.href = data.redirectURL; }, 1000);
+      msg.style.color="green";
+      msg.textContent = data.message || "Verification successful!";
+      setTimeout(()=>{ window.location.href = data.redirectURL; }, 1200);
     } else {
-      msg.textContent = data.message;
+      msg.style.color="red";
+      msg.textContent = data.message || "Invalid Name/ID!";
     }
 
-  } catch(err) {
-    msg.textContent = "Error connecting to server!";
-    console.error(err);
+  } catch(err){
+    msg.style.color="red";
+    msg.textContent="Cannot connect to server!";
+    console.error("Fetch error:", err);
   }
 });
 </script>
